@@ -9,7 +9,7 @@ from spotipy.oauth2 import SpotifyOAuth
 def createDfLikedSongs(sp):
     ############################## Load playlist data ##############################
     # Get users liked songs
-    numSongsToGet = 50
+    numSongsToGet = 45
     columns = ['id', 'name', 'popularity', 'explicit', 'duration_ms', 'danceability', 'energy',
                             'key', 'loudness', 'mode', 'speechiness', 'acousticness', 'instrumentalness',
                             'liveness', 'valence', 'tempo', 'time_signature', 'genres']
@@ -45,10 +45,6 @@ def createDfLikedSongs(sp):
         likedSongsDictionary['genres'].append(results['artists']['items'][0]['genres'])
 
     # Convert dictionary into dataframe, and pickle
-    likedSongsDf = pd.DataFrame.from_dict(likedSongsDictionary)
-    likedSongsDf.to_pickle("./spotify/likedSongs.pkl")
-
-    # Create yaml dump
-    playlist_dict = dict(zip(likedSongsDf['name'], likedSongsDf['id']))
-    with open('./spotify/playlists.yml', 'w') as outfile:
-        yaml.dump(playlist_dict, outfile, default_flow_style=False)
+    likedSongsDf = pd.DataFrame.from_dict(likedSongsDictionary)    
+    
+    return likedSongsDf

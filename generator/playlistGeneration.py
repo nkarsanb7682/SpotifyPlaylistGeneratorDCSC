@@ -5,6 +5,9 @@ import requests
 import pickle
 import firebase_admin
 import makeDfLikedSongs
+import makeDfReccommendations
+import randomForest
+import pandas as pd
 from firebase_admin import credentials
 from firebase_admin import db
 
@@ -34,26 +37,43 @@ def callback(ch, method, properties, body):
     jsonRest = pickle.loads(body)
     username = jsonRest['username']
     sp = jsonpickle.loads(jsonRest['spPickled'])
-    print(type(sp))
-
-    # Check if user already has a classifier stored
     ref = db.reference('/')
-    print("USERS IN DB: ", dict(ref.get()).keys())
-    if ((ref.get() == None) or (username not in dict(ref.get()).keys())):
-        # Train random forest classifier
-        model = 
+
+    # Train random forest classifier (or retrain existing user's model to account for new songs in 'Liked Songs')
+    try:
+        print("Getting liked songs for {}...".format(username))
+        playlist_tracks_df = makeDfLikedSongs.createDfLikedSongs(sp)
+        print("Getting reccommendations for {}...".format(username))
+        recommendation_tracks_df = makeDfReccommendations.createDfReccommendations(sp, playlist_tracks_df)
+        print("Training and fitting random forest for {}...".format(username))
+        model, X_recommend = randomForest.trainAndFitRandomForest(playlist_tracks_df, recommendation_tracks_df)
+
         # Make prediction
-        playlist = 
-        ref.set({
-            username : {
-                'playlistName' : playlist,
-                'model' : model
-            }
-        })
-    else:
-        # retrain random forest classifier to account for new songs added to 'Liked Songs'
-        pass
-    print(ref.get())
+        recommendation_tracks_df['ratings'] = model.predict(X_recommend)
+        recommendation_tracks_df['prob_ratings'] = model.predict_proba(X_recommend)[:,1]  # slice for probability of 1
+        playlist = list(recommendation_tracks_df[recommendation_tracks_df['prob_ratings'] >= 0.5]['name'])
+        
+        # Check if user is already in db
+        pickledModel = jsonpickle.dumps(model)
+        if ((ref.get() == None) or (username not in dict(ref.get()).keys())):
+            ref.set({
+                username : {
+                    'playlist0' : playlist,
+                    'pickledModel' : pickledModel
+                }
+            })
+        else:
+            # retrain random forest classifier to account for new songs added to 'Liked Songs'
+            user_ref = ref.child(username)
+            numPlaylists = len(list(user_ref.get().keys()))
+            playlistName = "playlist" + str(numPlaylists + 1)
+            user_ref.update({
+                playlistName : playlist,
+                'pickledModel' : pickledModel
+            })
+    except Exception as e:
+        print("SOMETHING BAD HAPPENED:")
+        print(e)
 
 
     # Return callback to rest server

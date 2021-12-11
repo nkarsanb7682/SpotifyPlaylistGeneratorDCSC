@@ -1,0 +1,15 @@
+FROM python:3.8
+
+RUN cd /tmp && \
+    pip3 install --upgrade pika redis jsonpickle requests flask firebase_admin pandas firebase_admin firebase_admin
+
+COPY makeDfLikedSongs.py .
+COPY makeDfReccommendations.py .
+COPY randomForest.py .
+COPY playlistGeneration.py .
+COPY spotifyplaylistgenerator-48abb-firebase-adminsdk-7lvlp-35a28672c7.json .
+
+ENV RABBITMQ_HOST rabbitmq
+ENV GOOGLE_APPLICATION_CREDENTIALS "./spotifyplaylistgenerator-48abb-firebase-adminsdk-7lvlp-35a28672c7.json"
+
+CMD	[ "python3", "playlistGeneration.py" ]
