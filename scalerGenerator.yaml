@@ -1,0 +1,19 @@
+apiVersion: keda.sh/v1alpha1                  #  <--- Property value was changed
+kind: ScaledObject
+metadata:                                     #  <--- labels.deploymentName is not needed
+  name: generator-scaler
+spec:
+  scaleTargetRef:
+    name: generator   
+  pollingInterval: 30            
+  cooldownPeriod:  300           
+  minReplicaCount: 0             
+  maxReplicaCount: 100           
+  triggers:
+  - type: prometheus
+    metadata:
+      # Required
+      serverAddress: http://prometheus-prom-oper-kube-prometheus-prometheus-0:9090
+      metricName: http_requests_total
+      query: sum(rate(http_requests_total{deployment="generator"}[2m])) # Note: query must return a vector/scalar single element response
+      threshold: '100'
