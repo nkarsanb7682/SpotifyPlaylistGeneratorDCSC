@@ -1,0 +1,14 @@
+FROM python:3.8
+
+RUN cd /tmp && \
+    pip3 install --upgrade pika jsonpickle requests flask spotipy
+
+COPY rest-server.py .
+
+ENV	FLASK_PORT 5000
+ENV REDIS_HOST redis
+ENV CLIENT_ID 3650000269c64c1dba61e5b330b70bb2
+ENV CLIENT_SECRET 6b39b98039ae4b0bad984b84a265789f
+ENV PYTHONUNBUFFERED 1
+
+CMD	[ "python3", "rest-server.py" ]
