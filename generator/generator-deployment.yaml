@@ -19,10 +19,6 @@ spec:
       containers:
       - name: generator
         image: 387527458246/generator
-        resources:
-          requests:
-            cpu: 100m
-            memory: 500Mi
         ports:
         - containerPort: 5000
 ---
