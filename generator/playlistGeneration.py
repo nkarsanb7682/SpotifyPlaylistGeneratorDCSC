@@ -7,7 +7,6 @@ import firebase_admin
 import makeDfLikedSongs
 import makeDfReccommendations
 import randomForest
-import pandas as pd
 from firebase_admin import credentials
 from firebase_admin import db
 
@@ -24,8 +23,7 @@ rabbitMQ = pika.BlockingConnection(
 rabbitMQChannel = rabbitMQ.channel()
 rabbitMQChannel.queue_declare(queue='toGenerator')
 
-# cred = credentials.Certificate(os.getenv('GOOGLE_APPLICATION_CREDENTIALS'))
-cred = credentials.Certificate('/mnt/c/Users/nkars/Documents/2021 - 2022 Courses/CSCI 5253 - Data Center Scale Computing/SpotifyRec/generator/spotifyplaylistgenerator-48abb-firebase-adminsdk-7lvlp-35a28672c7.json')
+cred = credentials.Certificate(os.getenv('GOOGLE_APPLICATION_CREDENTIALS'))
 default_app = firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://spotifyplaylistgenerator-48abb-default-rtdb.firebaseio.com/'
 })

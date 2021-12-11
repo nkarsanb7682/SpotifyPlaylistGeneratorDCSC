@@ -2,14 +2,8 @@ from flask import Flask, request, Response
 import os
 import pika
 import datetime
-import random
 import jsonpickle
-import spotipy
-from spotipy import oauth2
-from spotipy.oauth2 import SpotifyClientCredentials
-import webbrowser
 import pickle
-import urllib.request
 
 rabbitMQHost = os.getenv("RABBITMQ_HOST") or "localhost"
 print("Connecting to rabbitmq({})".format(rabbitMQHost))

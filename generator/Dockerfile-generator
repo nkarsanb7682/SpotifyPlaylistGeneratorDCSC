@@ -1,7 +1,7 @@
 FROM python:3.8
 
 RUN cd /tmp && \
-    pip3 install --upgrade pika redis jsonpickle requests flask firebase_admin pandas firebase_admin firebase_admin
+    pip3 install --upgrade pika redis jsonpickle requests flask firebase_admin pandas firebase_admin firebase_admin spotipy sklearn
 
 COPY makeDfLikedSongs.py .
 COPY makeDfReccommendations.py .

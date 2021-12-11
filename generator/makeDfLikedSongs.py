@@ -1,10 +1,4 @@
-import pickle
-import spotipy
-import yaml
-import os
-import json
 import pandas as pd
-from spotipy.oauth2 import SpotifyOAuth
 
 def createDfLikedSongs(sp):
     ############################## Load playlist data ##############################

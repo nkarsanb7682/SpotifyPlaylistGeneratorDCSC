@@ -1,10 +1,4 @@
-import pickle
-import spotipy
-import yaml
-import os
-import json
 import pandas as pd
-from spotipy.oauth2 import SpotifyOAuth
 
 def createDfReccommendations(sp, playlist_tracks_df):
     ############################## Get reccommendations ##############################
