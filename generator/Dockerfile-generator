@@ -11,5 +11,6 @@ COPY spotifyplaylistgenerator-48abb-firebase-adminsdk-7lvlp-35a28672c7.json .
 
 ENV RABBITMQ_HOST rabbitmq
 ENV GOOGLE_APPLICATION_CREDENTIALS "./spotifyplaylistgenerator-48abb-firebase-adminsdk-7lvlp-35a28672c7.json"
+ENV PYTHONUNBUFFERED 1
 
 CMD	[ "python3", "playlistGeneration.py" ]
